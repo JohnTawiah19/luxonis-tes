@@ -9,7 +9,7 @@ type Props = {
 
 export function Posts({ posts }: Props) {
   return (
-    <Stack p={8} spacing={4}>
+    <Stack p={8} spacing={4} alignItems={{ base: "center", lg: "flex-start" }}>
       <Heading size="lg"> Available apartments for Sale</Heading>
       <Flex wrap="wrap" gap={8} justifyContent={"center"}>
         {posts.map((post) => (
