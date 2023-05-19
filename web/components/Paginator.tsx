@@ -1,4 +1,11 @@
-import { Button, Flex, HStack, IconButton, Text } from "@chakra-ui/react";
+import {
+  Button,
+  Flex,
+  HStack,
+  IconButton,
+  Text,
+  useBreakpointValue,
+} from "@chakra-ui/react";
 import { Helpers } from "hooks/useStep";
 import React from "react";
 import { BsChevronLeft, BsChevronRight } from "react-icons/bs";
@@ -10,6 +17,7 @@ type Props = {
 };
 
 export function Paginator({ helpers, maxPages, currentPage }: Props) {
+  const isDesktop = useBreakpointValue({ base: false, lg: true });
   const {
     canGoToNextStep,
     canGoToPrevStep,
@@ -30,24 +38,29 @@ export function Paginator({ helpers, maxPages, currentPage }: Props) {
           icon={<BsChevronLeft />}
           isDisabled={!canGoToPrevStep}
         />
-        <HStack px={8}>
-          {" "}
-          {Array(maxPages)
-            .fill(0)
-            .map((page, index) => (
-              <Button
-                size="sm"
-                _hover={{ bg: "red.100" }}
-                bg={currentPage == index + 1 ? "red.500" : "gray.100"}
-                color={currentPage == index + 1 ? "white" : "black"}
-                borderRadius={"50%"}
-                key={index}
-                onClick={() => setStep(index + 1)}
-              >
-                {index + 1}
-              </Button>
-            ))}
-        </HStack>
+        {isDesktop ? (
+          <HStack px={8}>
+            {Array(maxPages)
+              .fill(0)
+              .map((page, index) => (
+                <Button
+                  size="sm"
+                  _hover={{ bg: "red.100" }}
+                  bg={currentPage == index + 1 ? "red.500" : "gray.100"}
+                  color={currentPage == index + 1 ? "white" : "black"}
+                  borderRadius={"50%"}
+                  key={index}
+                  onClick={() => setStep(index + 1)}
+                >
+                  {index + 1}
+                </Button>
+              ))}
+          </HStack>
+        ) : (
+          <Text>
+            {currentPage} of {maxPages}
+          </Text>
+        )}
 
         <IconButton
           onClick={goToNextStep}
