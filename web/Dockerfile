@@ -11,7 +11,7 @@ COPY . .
 RUN yarn run build
 
 # Expose port 3000 for the Next.js server
-EXPOSE 3000
+EXPOSE 8080
 
 # Start the Next.js server when the container runs
 CMD ["yarn", "start"]
