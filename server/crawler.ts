@@ -1,18 +1,12 @@
 import * as puppet from "puppeteer";
+import { Post } from "./types";
 //Write crawler
 
-type Data = {
-  title: string;
-  location: string;
-  price: string;
-  labels: string[];
-  imgs: string[];
-};
 export const spider = async (url: string) => {
-  console.log("Crawling page...");
+  console.log("Please wait!!! Crawling pages...");
 
   const selectors = ".property.ng-scope";
-  const browser = await puppet.launch({ headless: "new" });
+  const browser = await puppet.launch({ headless: "new", timeout: 500000 });
   const page = await browser.newPage();
   await page.goto(url);
 
@@ -22,10 +16,18 @@ export const spider = async (url: string) => {
 
   const cards = await getCardList(divs);
 
-  // await browser.close();
+  await browser.close();
   return cards;
 };
 
+async function getCardList(cards: puppet.ElementHandle<Element>[]) {
+  const cardList: Post[] = [];
+  for (const card of cards) {
+    const data = await extractCard(card);
+    cardList.push(data);
+  }
+  return cardList;
+}
 async function extractCard(card: puppet.ElementHandle<Element>) {
   const titleSelector = ".name";
   const locationSelector = ".locality";
@@ -43,17 +45,11 @@ async function extractCard(card: puppet.ElementHandle<Element>) {
     });
   });
 
-  const imgs = await card.$$eval("img", (images) =>
+  const logo = "https://www.sreality.cz/img/camera.svg";
+  const pics = await card.$$eval("img", (images) =>
     images.map((img) => img.src)
   );
-  return { title, location, price, labels, imgs };
-}
+  const imgs = pics.filter((img) => img != logo);
 
-async function getCardList(cards: puppet.ElementHandle<Element>[]) {
-  const cardList: Data[] = [];
-  for (const card of cards) {
-    const data = await extractCard(card);
-    cardList.push(data);
-  }
-  return cardList;
+  return { title, location, price, labels, imgs };
 }
