@@ -1,4 +1,4 @@
-FROM node:slim AS app
+FROM node:16
 
 ENV DATABASE_URL="postgres://postgres:admin@db:5432/crawler"
 
