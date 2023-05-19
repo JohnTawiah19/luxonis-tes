@@ -6,7 +6,15 @@ export const spider = async (url: string) => {
   console.log("Please wait!!! Crawling pages...");
 
   const selectors = ".property.ng-scope";
-  const browser = await puppet.launch({ headless: "new", timeout: 500000 });
+  const browser = await puppet.launch({
+    headless: "new",
+    args: [
+      "--disable-gpu",
+      "--disable-dev-shm-usage",
+      "--disable-setuid-sandbox",
+      "--no-sandbox",
+    ],
+  });
   const page = await browser.newPage();
   await page.goto(url);
 

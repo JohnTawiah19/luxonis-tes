@@ -1,23 +1,59 @@
-# Use Node.js as the base image
-FROM node:16
+FROM node:slim AS app
 
 ENV DATABASE_URL="postgres://postgres:admin@db:5432/crawler"
 
-# Set the working directory inside the container
+# Install required dependencies for Puppeteer and libgbm.so.1
+RUN apt-get update && apt-get install -y \
+    gconf-service \
+    libasound2 \
+    libatk1.0-0 \
+    libc6 \
+    libcairo2 \
+    libcups2 \
+    libdbus-1-3 \
+    libexpat1 \
+    libfontconfig1 \
+    libgbm1 \
+    libgcc1 \
+    libgconf-2-4 \
+    libgdk-pixbuf2.0-0 \
+    libglib2.0-0 \
+    libgtk-3-0 \
+    libjpeg62-turbo \
+    libnspr4 \
+    libpango-1.0-0 \
+    libpangocairo-1.0-0 \
+    libstdc++6 \
+    libx11-6 \
+    libx11-xcb1 \
+    libxcb1 \
+    libxcomposite1 \
+    libxcursor1 \
+    libxdamage1 \
+    libxext6 \
+    libxfixes3 \
+    libxi6 \
+    libxrandr2 \
+    libxrender1 \
+    libxss1 \
+    libxtst6 \
+    ca-certificates \
+    fonts-liberation \
+    libappindicator1 \
+    libnss3 \
+    lsb-release \
+    xdg-utils \
+    wget
+
+
 WORKDIR /server
 
-
-# Copy the package.json and package-lock.json files to the container
 COPY package.json yarn.lock ./
 
-# Install dependencies
 RUN yarn install
 
-# Copy the server code into the container
 COPY . .
 
-# Expose the necessary port for your server
 EXPOSE 3001
 
-# Start the server when the container runs
 CMD ["yarn", "start"]
